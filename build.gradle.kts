@@ -22,13 +22,23 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	implementation("org.springframework.boot:spring-boot-starter-web")
-	compileOnly("org.projectlombok:lombok")
-	developmentOnly("org.springframework.boot:spring-boot-devtools")
-	runtimeOnly("com.mysql:mysql-connector-j")
-	annotationProcessor("org.projectlombok:lombok")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	//Spring configuration
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.1.3")
+	implementation("org.springframework.boot:spring-boot-starter-web:3.1.3")
+	developmentOnly("org.springframework.boot:spring-boot-devtools:3.1.3")
+	testImplementation("org.springframework.boot:spring-boot-starter-test:3.1.3")
+
+	//Lombok
+	compileOnly("org.projectlombok:lombok:1.18.28")
+	annotationProcessor("org.projectlombok:lombok:1.18.28")
+
+	//DataBase
+	runtimeOnly("com.mysql:mysql-connector-j:8.0.33")
+
+	//swagger
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
+
+
 }
 
 tasks.withType<Test> {
