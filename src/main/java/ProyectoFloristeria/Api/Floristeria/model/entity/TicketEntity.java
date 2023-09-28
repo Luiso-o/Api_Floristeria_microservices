@@ -3,20 +3,24 @@ package ProyectoFloristeria.Api.Floristeria.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@NoArgsConstructor
+@Table(name = "Tickets")
 @Entity
-public class ArbolEntity {
+public class TicketEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idArbol;
-    @Column(name = "AturaCm")
-    private double altura;
-    @Column(name = "precioEuros")
-    private double precio;
+    private long idTicket;
+    @Column(name = "fecha")
+    private LocalDate fecha;
+    @ManyToOne
+    @JoinColumn(name = "idProducto")
+    private ProductoEntity producto;
     @ManyToOne
     @JoinColumn(name = "idFloristeria")
     private FloristeriaEntity floristeria;
