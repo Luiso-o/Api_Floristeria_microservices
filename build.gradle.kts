@@ -37,6 +37,7 @@ dependencies {
 
 	//swagger
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
+	implementation("io.swagger:swagger-annotations:1.6.11")
 
 
 }
