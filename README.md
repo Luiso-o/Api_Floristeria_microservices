@@ -31,5 +31,7 @@ En cuanto a las funcionalidades del programa principal (Main), como mínimo, deb
 
 
 - JAVA VERSION 17.0.1
-- 
+  
 - LOCALHOST 8080
+
+- /swagger-ui/index.html#/
