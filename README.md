@@ -35,3 +35,10 @@ En cuanto a las funcionalidades del programa principal (Main), como mínimo, deb
 - LOCALHOST 8080
 
 - /swagger-ui/index.html#/
+
+- GRADLE VERSION 8.2.1
+
+- KOTLIN VERSION 1.8.20
+
+
+
