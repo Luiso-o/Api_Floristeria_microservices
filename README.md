@@ -30,5 +30,5 @@ En cuanto a las funcionalidades del programa principal (Main), como mínimo, deb
 13. Visualizar el total de dinero ganado con todas las ventas.
 
 
-JAVA VERSION 17.0.1
-LOCALHOST 8080
+-JAVA VERSION 17.0.1
+-LOCALHOST 8080
