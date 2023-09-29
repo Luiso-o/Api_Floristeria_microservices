@@ -4,6 +4,9 @@ import ProyectoFloristeria.Api.Floristeria.model.entity.TipoProducto;
 import io.swagger.annotations.*;
 import lombok.*;
 
+/**
+ * @author Luis
+ */
 @Builder
 @Data
 @AllArgsConstructor
@@ -16,7 +19,7 @@ public class ProductoDto {
     private String caracteristica;
     @ApiModelProperty(value = "Precio del producto en euros", example = "50.0")
     private double precio;
-    @ApiModelProperty(value = "Información de la floristería a la que pertenece el producto")
-    private FloristeriaDto floristeria;
+    @ApiModelProperty(value = "Nombre de la floristería a la que pertenece el producto")
+    private String nombreTienda;
 
 }
