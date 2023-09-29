@@ -54,14 +54,14 @@ public class FloristeriaService {
         return misTiendas.stream().map(this::castearFloristeriaADto).collect(Collectors.toList());
     }
 
-    /**
-     * Metodos privados de la clase FloristeriaService
-     */
-    private FloristeriaEntity encuentraFloristeria(long id) {
+    public FloristeriaEntity encuentraFloristeria(long id) {
         return floristeriaRepository.findById(id)
                 .orElseThrow(()-> new EntityNotFoundException("No existe floristeria con el id " + id));
     }
 
+    /**
+     * Metodos privados de la clase FloristeriaService
+     */
     private FloristeriaDto castearFloristeriaADto(FloristeriaEntity nueva) {
         return FloristeriaDto.builder()
                 .idFloristeria(nueva.getIdFloristeria())
@@ -69,7 +69,5 @@ public class FloristeriaService {
                 .pais(nueva.getPais())
                 .build();
     }
-
-
 
 }
