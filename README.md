@@ -8,7 +8,7 @@ Este programa debe cumplir con los siguientes requisitos:
 En una floristería, que tiene un nombre, tenemos árboles, flores y decoración.
 Cada árbol tiene una altura.
 Las flores tienen un color.
-La decoración tiene un tipo de material.
+La decoración tiene un tipo de material: Madera o plástico.
 Todos tienen un precio.
 Una floristería debe tener un stock de cada uno de los productos (árboles, flores y decoración).
 La floristería tiene un registro del valor total del stock que tiene.
