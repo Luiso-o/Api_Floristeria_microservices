@@ -1,5 +1,6 @@
 package ProyectoFloristeria.Api.Floristeria.model.entity;
 
+import ProyectoFloristeria.Api.Floristeria.model.entity.enumeraciones.TipoProducto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -7,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "Productos")
+@Table(name = "productos")
 @Entity
 public class ProductoEntity{
 
@@ -17,11 +18,11 @@ public class ProductoEntity{
     @Enumerated(EnumType.STRING)
     @Column(name = "TipoProducto")
     private TipoProducto tipo;
-    @Column(name = "Caracter")
-    private String caracteristica;
+    @Column(name = "Caracter",columnDefinition = "TEXT")
+    private Object caracteristica;
     @Column(name = "precioEuros")
     private double precio;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "idFloristeria")
     private FloristeriaEntity floristeria;
 }

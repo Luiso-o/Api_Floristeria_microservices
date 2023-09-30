@@ -1,6 +1,7 @@
 package ProyectoFloristeria.Api.Floristeria.controllers;
 
 import ProyectoFloristeria.Api.Floristeria.model.Dto.FloristeriaDto;
+import ProyectoFloristeria.Api.Floristeria.model.Dto.ProductoDto;
 import ProyectoFloristeria.Api.Floristeria.model.services.FloristeriaService;
 import io.swagger.v3.oas.annotations.*;
 import io.swagger.v3.oas.annotations.responses.*;
@@ -92,7 +93,4 @@ public class FloristeriaController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
-
-
 }

@@ -54,6 +54,7 @@ public class FloristeriaService {
         return misTiendas.stream().map(this::castearFloristeriaADto).collect(Collectors.toList());
     }
 
+
     public FloristeriaEntity encuentraFloristeria(long id) {
         return floristeriaRepository.findById(id)
                 .orElseThrow(()-> new EntityNotFoundException("No existe floristeria con el id " + id));
@@ -69,5 +70,6 @@ public class FloristeriaService {
                 .pais(nueva.getPais())
                 .build();
     }
+
 
 }

@@ -12,7 +12,6 @@ import java.time.LocalDate;
 @Table(name = "Floristeria")
 @Entity
 public class FloristeriaEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idFloristeria;
