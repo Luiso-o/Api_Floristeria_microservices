@@ -30,6 +30,7 @@ En cuanto a las funcionalidades del programa principal (Main), como mínimo, deb
 13. Visualizar el total de dinero ganado con todas las ventas.
 
 
+- SRPING VERSION 3.1.14
 - JAVA VERSION 17.0.1
 - LOCALHOST 8080
 - /swagger-ui/index.html#/
