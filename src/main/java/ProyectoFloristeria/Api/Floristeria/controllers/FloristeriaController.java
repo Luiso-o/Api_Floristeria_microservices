@@ -1,7 +1,6 @@
 package ProyectoFloristeria.Api.Floristeria.controllers;
 
 import ProyectoFloristeria.Api.Floristeria.model.Dto.FloristeriaDto;
-import ProyectoFloristeria.Api.Floristeria.model.Dto.ProductoDto;
 import ProyectoFloristeria.Api.Floristeria.model.services.FloristeriaService;
 import io.swagger.v3.oas.annotations.*;
 import io.swagger.v3.oas.annotations.responses.*;
@@ -12,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Luis
@@ -92,5 +91,19 @@ public class FloristeriaController {
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @Operation(summary = "Ver valor del Stock", description = "Muestra el valor total del stock de la tienda")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Solicitud realizada con éxito "),
+            @ApiResponse(responseCode = "404", description = "Stock vacío "),
+            @ApiResponse(responseCode = "500", description = "Id no encontrado")
+    })
+    @GetMapping(value = "getAll/valorDelStock")
+    public ResponseEntity<Map<String, Object>> calculaValorTotalDeLaFloristeria(@RequestParam long idTienda) {
+        double valorTotal = floristeriaService.devuelveValorTotalStock(idTienda);
+        Map<String, Object> response = new HashMap<>();
+        response.put("valorTotal ", valorTotal);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

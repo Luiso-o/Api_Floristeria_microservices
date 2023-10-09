@@ -6,17 +6,13 @@ import ProyectoFloristeria.Api.Floristeria.model.entity.enumeraciones.Materiales
 import ProyectoFloristeria.Api.Floristeria.model.entity.enumeraciones.TipoProducto;
 import ProyectoFloristeria.Api.Floristeria.model.services.ProductoService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.responses.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Luis
@@ -68,7 +64,7 @@ public class ProductoController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Lista de tienda encontrada : "),
             @ApiResponse(responseCode = "204", description = "Lista Vacía : "),
-            @ApiResponse(responseCode = "404", description = "Id de tienda no encontrado")
+            @ApiResponse(responseCode = "500", description = "Id de tienda no encontrado")
     })
     @GetMapping(value = "stock/getAll")
     public ResponseEntity<?> imprimeStockDeTienda(@RequestParam long idTienda){
@@ -108,7 +104,7 @@ public class ProductoController {
         ProductoEntity arbol = productoService.encuentraProducto(idFlor);
         if(arbol.getTipo() == TipoProducto.FLOR){
             productoService.eliminarProductoDelStock(arbol);
-            return ResponseEntity.status(HttpStatus.OK).body("Flor eliminado con éxito");
+            return ResponseEntity.status(HttpStatus.OK).body("Flor eliminada con éxito");
         }else{
             return ResponseEntity.status(HttpStatus.CONFLICT).body("El id proporcionado no coincide con una flor");
         }
@@ -131,14 +127,15 @@ public class ProductoController {
         }
     }
 
-    /*@GetMapping(value = "getAll/cantidades")
-    public ResponseEntity<Map<String,Integer>>imprimirCantidadesDeProductos(){
-        ArrayList<Integer>cantidades = productoService.listaDeCantidades();
-        Map<String,Integer>cantidadDeProductos = new HashMap<>();
-        cantidadDeProductos.put("Cantidad de árboles en stock", cantidades.get(0));
-        cantidadDeProductos.put("Cantidad de flores en stock", cantidades.get(1));
-        cantidadDeProductos.put("Cantidad de decoraciones en stock", cantidades.get(2));
-        return ResponseEntity.status(HttpStatus.OK).body(cantidadDeProductos);
-    }*/
+    @Operation(summary = "Ver lista de productos", description = "Verifica la cantidad de tu Stock a nivel global")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Operación ejecutada con éxito: "),
+    })
+    @GetMapping(value = "getAll/cantidades")
+    public ResponseEntity<Map<TipoProducto, Integer>> imprimirCantidadesDeProductos() {
+        EnumMap<TipoProducto, Integer> cantidades = productoService.listaDeCantidades();
+        return ResponseEntity.status(HttpStatus.OK).body(cantidades);
+    }
+
 
 }

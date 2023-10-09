@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,6 +58,7 @@ public class ProductoService {
     }
 
     public List<ProductoDto> imprimeStockDeTienda(long idTienda) {
+        floristeriaService.encuentraFloristeriaPorSuId(idTienda);
         List<ProductoEntity>miStock = productoRepository.findAllByFloristeria_IdFloristeria(idTienda);
         return miStock.stream().map(this::castearADto).collect(Collectors.toList());
     }
@@ -68,6 +70,16 @@ public class ProductoService {
     public ProductoEntity encuentraProducto(long id){
         return productoRepository.findById(id).
                 orElseThrow(()-> new EntityNotFoundException("No se encontró el producto con el id " + id));
+    }
+
+    public EnumMap<TipoProducto, Integer> listaDeCantidades() {
+        EnumMap<TipoProducto, Integer> cantidades = new EnumMap<>(TipoProducto.class);
+        List<ProductoEntity> misProductos = productoRepository.findAll();
+        for (ProductoEntity misProducto : misProductos) {
+            TipoProducto tipo = misProducto.getTipo();
+            cantidades.put(tipo, cantidades.getOrDefault(tipo, 0) + 1);
+        }
+        return cantidades;
     }
 
 
@@ -83,7 +95,6 @@ public class ProductoService {
                 .nombreTienda(nuevo.getFloristeria().getNombre())
                 .build();
     }
-
 
 
 }
