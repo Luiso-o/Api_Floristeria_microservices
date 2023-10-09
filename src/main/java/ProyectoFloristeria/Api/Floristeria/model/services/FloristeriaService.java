@@ -2,7 +2,9 @@ package ProyectoFloristeria.Api.Floristeria.model.services;
 
 import ProyectoFloristeria.Api.Floristeria.model.Dto.FloristeriaDto;
 import ProyectoFloristeria.Api.Floristeria.model.entity.FloristeriaEntity;
+import ProyectoFloristeria.Api.Floristeria.model.entity.ProductoEntity;
 import ProyectoFloristeria.Api.Floristeria.model.repositories.FloristeriaRepository;
+import ProyectoFloristeria.Api.Floristeria.model.repositories.ProductoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,8 @@ public class FloristeriaService {
 
     @Autowired
     private FloristeriaRepository floristeriaRepository;
+    @Autowired
+    private ProductoRepository productoRepository;
 
     public FloristeriaDto crearNuevaFloristeria(String nombre, String pais) {
         return castearFloristeriaADto(floristeriaRepository.save(FloristeriaEntity.builder()
@@ -54,6 +58,15 @@ public class FloristeriaService {
         return misTiendas.stream().map(this::castearFloristeriaADto).collect(Collectors.toList());
     }
 
+    public double devuelveValorTotalStock(long idTienda) {
+        encuentraFloristeria(idTienda);
+        List<ProductoEntity> productosDeFloristeria = productoRepository.findAllByFloristeria_IdFloristeria(idTienda);
+        if (productosDeFloristeria != null && !productosDeFloristeria.isEmpty()) {
+            return productosDeFloristeria.stream().mapToDouble(ProductoEntity::getPrecio).sum();
+        }
+        return 0.0;
+    }
+
 
     public FloristeriaEntity encuentraFloristeria(long id) {
         return floristeriaRepository.findById(id)
@@ -70,6 +83,7 @@ public class FloristeriaService {
                 .pais(nueva.getPais())
                 .build();
     }
+
 
 
 }
