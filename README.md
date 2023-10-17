@@ -5,15 +5,15 @@ Debemos crear un programa para gestionar el catálogo de productos de una floris
 
 Este programa debe cumplir con los siguientes requisitos:
 
-En una floristería, que tiene un nombre, tenemos árboles, flores y decoración.
-Cada árbol tiene una altura.
-Las flores tienen un color.
-La decoración tiene un tipo de material: Madera o plástico.
-Todos tienen un precio.
-Una floristería debe tener un stock de cada uno de los productos (árboles, flores y decoración).
-La floristería tiene un registro del valor total del stock que tiene.
-Se debe crear una clase "ticket" donde se puedan registrar las compras en una sola lista.
-En cuanto a las funcionalidades del programa principal (Main), como mínimo, debe incluir las siguientes:
+* En una floristería, que tiene un nombre, tenemos árboles, flores y decoración.
+* Cada árbol tiene una altura.
+* Las flores tienen un color.
+* La decoración tiene un tipo de material: Madera o plástico.
+* Todos tienen un precio.
+* Una floristería debe tener un stock de cada uno de los productos (árboles, flores y decoración).
+* La floristería tiene un registro del valor total del stock que tiene.
+* Se debe crear una clase "ticket" donde se puedan registrar las compras en una sola lista.
+* En cuanto a las funcionalidades del programa principal (Main), como mínimo, debe incluir las siguientes:
 
 1. Crear Floristería.
 2. Agregar Árbol.
