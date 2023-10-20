@@ -23,10 +23,15 @@ repositories {
 
 dependencies {
 	//Spring configuration
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.1.3")
 	implementation("org.springframework.boot:spring-boot-starter-web:3.1.3")
 	developmentOnly("org.springframework.boot:spring-boot-devtools:3.1.3")
 	testImplementation("org.springframework.boot:spring-boot-starter-test:3.1.3")
+	implementation("jakarta.persistence:jakarta.persistence-api:3.1.0")
+
+	// Spring WebFlux y Spring Data R2DBC para programación reactiva
+	implementation("org.springframework.boot:spring-boot-starter-data-r2dbc:3.0.4")
+	implementation("org.springframework.boot:spring-boot-starter-webflux:3.0.4")
+	implementation("org.yaml:snakeyaml:2.0")
 
 	//Lombok
 	compileOnly("org.projectlombok:lombok:1.18.28")
@@ -38,6 +43,9 @@ dependencies {
 	//swagger
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
 	implementation("io.swagger:swagger-annotations:1.6.11")
+
+	// https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+	implementation("org.slf4j:slf4j-api:2.0.9")
 
 
 }
