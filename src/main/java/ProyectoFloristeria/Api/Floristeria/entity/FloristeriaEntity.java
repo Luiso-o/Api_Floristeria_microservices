@@ -1,4 +1,4 @@
-package ProyectoFloristeria.Api.Floristeria.model.entity;
+package ProyectoFloristeria.Api.Floristeria.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

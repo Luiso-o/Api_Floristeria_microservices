@@ -1,4 +1,4 @@
-package ProyectoFloristeria.Api.Floristeria.model.Dto;
+package ProyectoFloristeria.Api.Floristeria.Dto;
 
 import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.media.Schema;
