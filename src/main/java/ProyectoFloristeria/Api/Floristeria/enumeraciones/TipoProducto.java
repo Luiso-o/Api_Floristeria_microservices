@@ -1,4 +1,4 @@
-package ProyectoFloristeria.Api.Floristeria.entity.enumeraciones;
+package ProyectoFloristeria.Api.Floristeria.enumeraciones;
 
 /**
  * Aquí puedes agregar o quitar los productos que quieras

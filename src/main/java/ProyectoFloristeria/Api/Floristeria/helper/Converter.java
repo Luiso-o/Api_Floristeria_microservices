@@ -5,8 +5,7 @@ import ProyectoFloristeria.Api.Floristeria.entity.FloristeriaEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Flux;
-
+import reactor.core.publisher.Mono;
 
 import java.util.regex.Pattern;
 
@@ -15,7 +14,7 @@ public class Converter {
     private static final Pattern LONG_PATTERN = Pattern.compile("^-?\\d+$");
     private static final Logger log = LoggerFactory.getLogger(Converter.class);
 
-    public Flux<FloristeriaDto>fromFloristeriaEntityToDto(Flux<FloristeriaEntity> store){
+    public Mono<FloristeriaDto> fromFloristeriaEntityToDto(Mono<FloristeriaEntity> store){
         return store.map(this::floristeriaDto);
     }
 

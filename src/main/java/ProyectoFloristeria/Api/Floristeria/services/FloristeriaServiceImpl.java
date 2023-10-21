@@ -1,6 +1,8 @@
 package ProyectoFloristeria.Api.Floristeria.services;
 
 import ProyectoFloristeria.Api.Floristeria.Dto.FloristeriaDto;
+import ProyectoFloristeria.Api.Floristeria.entity.FloristeriaEntity;
+import ProyectoFloristeria.Api.Floristeria.excepciones.StoreCreationException;
 import ProyectoFloristeria.Api.Floristeria.excepciones.StoreNotFoundException;
 import ProyectoFloristeria.Api.Floristeria.helper.Converter;
 import ProyectoFloristeria.Api.Floristeria.repositories.FloristeriaRepository;
@@ -9,6 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.*;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
 
 @Service
 public class FloristeriaServiceImpl implements FloristeriaService {
@@ -42,8 +47,22 @@ public class FloristeriaServiceImpl implements FloristeriaService {
 
     @Override
     public Mono<FloristeriaDto> createFloristeria(String nombre, String pais) {
+        String nombreVerificado = nombre.isEmpty() || nombre.isBlank() ? "Mi floristería" : nombre;
+        String paisVerificado = pais.isEmpty() || pais.isBlank() ? "País no especificado" : pais;
 
-        return null;
+        FloristeriaEntity newStore = FloristeriaEntity.builder()
+                .fechaApertura(LocalDate.now())
+                .nombre(nombreVerificado)
+                .pais(paisVerificado)
+                .misProductos(new ArrayList<>())
+                .build();
+
+        return Mono.fromCallable(() -> floristeriaRepository.save(newStore))
+                .flatMap(savedStore -> converter.fromFloristeriaEntityToDto(savedStore))
+                .onErrorResume(throwable -> {
+                    log.error("Error al crear una floristería", throwable);
+                    return Mono.error(new StoreCreationException("No se pudo crear la floristería."));
+                });
     }
 
     @Override

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -21,4 +22,7 @@ public class FloristeriaEntity {
     private LocalDate fechaApertura;
     @Column(name = "Pais_Sucursal")
     private String pais;
+    @OneToMany(mappedBy = "tienda", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "idTienda")
+    List<ProductoEntity> misProductos;
 }
