@@ -22,32 +22,30 @@ repositories {
 }
 
 dependencies {
-	//Spring configuration
-	implementation("org.springframework.boot:spring-boot-starter-web:3.1.3")
-	developmentOnly("org.springframework.boot:spring-boot-devtools:3.1.3")
-	testImplementation("org.springframework.boot:spring-boot-starter-test:3.1.3")
-	implementation("jakarta.persistence:jakarta.persistence-api:3.1.0")
-
-	// Spring WebFlux y Spring Data R2DBC para programación reactiva
-	implementation("org.springframework.boot:spring-boot-starter-data-r2dbc:3.0.4")
+	implementation("org.springframework.boot:spring-boot-starter-web:3.1.0")
+	developmentOnly("org.springframework.boot:spring-boot-devtools:3.1.0")
 	implementation("org.springframework.boot:spring-boot-starter-webflux:3.0.4")
-	implementation("dev.miku:r2dbc-mysql:0.8.2.RELEASE")
+	implementation("io.projectreactor:reactor-core:3.5.11")
 	implementation("org.yaml:snakeyaml:2.0")
 
-	//DataBase
-	runtimeOnly("com.mysql:mysql-connector-j:8.0.33")
+	// Spring Data MongoDB
+	implementation("org.springframework.boot:spring-boot-starter-data-mongodb:3.1.0")
+	implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive:3.0.4")
 
-	//Lombok
+	// Lombok
 	compileOnly("org.projectlombok:lombok:1.18.28")
 	annotationProcessor("org.projectlombok:lombok:1.18.28")
 
-	//swagger
-	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
+	// Springdoc for Swagger
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4")
 	implementation("io.swagger:swagger-annotations:1.6.11")
 
-	// https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+	// SLF4J
 	implementation("org.slf4j:slf4j-api:2.0.9")
 
+	// Test
+	testImplementation("org.springframework.boot:spring-boot-starter-test:3.1.0")
+	testImplementation("io.projectreactor:reactor-test:3.5.4")
 }
 
 tasks.withType<Test> {
