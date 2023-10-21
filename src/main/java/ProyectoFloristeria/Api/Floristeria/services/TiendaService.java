@@ -5,9 +5,9 @@ import ProyectoFloristeria.Api.Floristeria.enumeraciones.PaisesSucursales;
 import reactor.core.publisher.*;
 
 public interface TiendaService {
-    Flux<TiendaDto> getAllFloristerias();
-    Mono<TiendaDto> getFloristeriaById(String id);
+    Flux<TiendaDto> getAllStores();
+    Mono<TiendaDto> getStoreById(String id);
     Mono<TiendaDto> createStore(String nombre, PaisesSucursales pais);
-    Mono<TiendaDto> updateFloristeria(String id, String nombre, String pais);
-    Mono<Void> deleteFloristeria(String id);
+    Mono<TiendaDto> updateStore(String id, String nombre,PaisesSucursales pais);
+    Mono<Void> deleteStore(String id);
 }

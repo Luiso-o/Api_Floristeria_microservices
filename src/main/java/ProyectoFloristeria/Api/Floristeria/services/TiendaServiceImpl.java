@@ -25,12 +25,14 @@ public class TiendaServiceImpl implements TiendaService {
     private Converter converter;
 
     @Override
-    public Flux<TiendaDto> getAllFloristerias() {
-        return null;
+    public Flux<TiendaDto> getAllStores() {
+        return tiendaRepository.findAll()
+                .flatMap(tienda -> converter.fromFloristeriaEntityToDto(Mono.just(tienda)))
+                .log("Obtenidas todas las tiendas con éxito");
     }
 
     @Override
-    public Mono<TiendaDto> getFloristeriaById(String id) {
+    public Mono<TiendaDto> getStoreById(String id) {
         String idVerificado = converter.verificaId(id);
         return tiendaRepository.findById(idVerificado)
                 .flatMap(store -> {
@@ -57,6 +59,7 @@ public class TiendaServiceImpl implements TiendaService {
                 .misProductos(new ArrayList<>())
                 .tickets(new ArrayList<>())
                 .build();
+        log.info("Tienda creada con éxito");
 
         return Mono.fromCallable(() -> tiendaRepository.save(newStore))
                 .flatMap(savedStore -> converter.fromFloristeriaEntityToDto(savedStore))
@@ -68,12 +71,43 @@ public class TiendaServiceImpl implements TiendaService {
     }
 
     @Override
-    public Mono<TiendaDto> updateFloristeria(String id, String nombre, String pais) {
-        return null;
+    public Mono<TiendaDto> updateStore(String id, String nombre, PaisesSucursales pais) {
+        String idVerificado = converter.verificaId(id);
+        String nombreVerificado = nombre.isEmpty() || nombre.isBlank() ? "Mi floristería" : nombre;
+
+        return tiendaRepository.findById(idVerificado)
+                .flatMap(tiendaModificada -> {
+                    if(tiendaModificada != null){
+                        tiendaModificada.setNombre(nombreVerificado);
+                        tiendaModificada.setPais(pais);
+                        log.info("Tienda modificada con éxito");
+
+                        return tiendaRepository.save(tiendaModificada)
+                                .log("Tienda Guardada con éxito ")
+                                .flatMap(savedStore ->
+                                        converter.fromFloristeriaEntityToDto(Mono.just(savedStore)));
+                    }else{
+                        log.warn("No se encontró la floristería con el ID: {}", idVerificado);
+                        return Mono.empty();
+                    }
+                })
+                .switchIfEmpty(Mono.error(new StoreNotFoundException("No se encontró la floristería con el ID: " + idVerificado)));
     }
 
     @Override
-    public Mono<Void> deleteFloristeria(String id) {
-        return null;
+    public Mono<Void> deleteStore(String id) {
+        String idVerificado = converter.verificaId(id);
+
+        return tiendaRepository.findById(idVerificado)
+                .flatMap(tiendaAEliminar ->{
+                    if(tiendaAEliminar != null){
+                        return tiendaRepository.delete(tiendaAEliminar)
+                                .log("Tienda eliminada con éxito")
+                                .then();
+                    }else{
+                        log.warn("No se encontró la floristería con el ID: {}", idVerificado);
+                        return Mono.empty();
+                    }
+                });
     }
 }
