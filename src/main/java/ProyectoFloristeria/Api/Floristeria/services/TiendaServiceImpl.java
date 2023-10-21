@@ -1,13 +1,14 @@
 package ProyectoFloristeria.Api.Floristeria.services;
-
-import ProyectoFloristeria.Api.Floristeria.Dto.FloristeriaDto;
-import ProyectoFloristeria.Api.Floristeria.entity.FloristeriaEntity;
+import ProyectoFloristeria.Api.Floristeria.Dto.TiendaDto;
+import ProyectoFloristeria.Api.Floristeria.Documents.TiendaDocument;
+import ProyectoFloristeria.Api.Floristeria.enumeraciones.PaisesSucursales;
 import ProyectoFloristeria.Api.Floristeria.excepciones.StoreCreationException;
 import ProyectoFloristeria.Api.Floristeria.excepciones.StoreNotFoundException;
 import ProyectoFloristeria.Api.Floristeria.helper.Converter;
-import ProyectoFloristeria.Api.Floristeria.repositories.FloristeriaRepository;
+import ProyectoFloristeria.Api.Floristeria.repositories.TiendaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.*;
@@ -16,26 +17,26 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 @Service
-public class FloristeriaServiceImpl implements FloristeriaService {
-    private static final Logger log = LoggerFactory.getLogger(FloristeriaServiceImpl.class);
+public class TiendaServiceImpl implements TiendaService {
+    private static final Logger log = LoggerFactory.getLogger(TiendaServiceImpl.class);
     @Autowired
-    private FloristeriaRepository floristeriaRepository;
+    private TiendaRepository tiendaRepository;
     @Autowired
     private Converter converter;
 
     @Override
-    public Flux<FloristeriaDto> getAllFloristerias() {
+    public Flux<TiendaDto> getAllFloristerias() {
         return null;
     }
 
     @Override
-    public Mono<FloristeriaDto> getFloristeriaById(Long id) {
-        converter.verificaId(id);
-        return floristeriaRepository.findById(id)
+    public Mono<TiendaDto> getFloristeriaById(String id) {
+        String idVerificado = converter.verificaId(id);
+        return tiendaRepository.findById(idVerificado)
                 .flatMap(store -> {
                     if (store != null) {
                         log.info("Floristería encontrada con éxito: {}", store);
-                        FloristeriaDto dto = converter.floristeriaDto(store);
+                        TiendaDto dto = converter.floristeriaDto(store);
                         return Mono.just(dto);
                     } else {
                         log.warn("No se encontró la floristería con el ID: {}", id);
@@ -46,19 +47,20 @@ public class FloristeriaServiceImpl implements FloristeriaService {
     }
 
     @Override
-    public Mono<FloristeriaDto> createFloristeria(String nombre, String pais) {
+    public Mono<TiendaDto> createStore(String nombre, PaisesSucursales pais) {
         String nombreVerificado = nombre.isEmpty() || nombre.isBlank() ? "Mi floristería" : nombre;
-        String paisVerificado = pais.isEmpty() || pais.isBlank() ? "País no especificado" : pais;
 
-        FloristeriaEntity newStore = FloristeriaEntity.builder()
+        TiendaDocument newStore = TiendaDocument.builder()
                 .fechaApertura(LocalDate.now())
                 .nombre(nombreVerificado)
-                .pais(paisVerificado)
+                .pais(pais)
                 .misProductos(new ArrayList<>())
+                .tickets(new ArrayList<>())
                 .build();
 
-        return Mono.fromCallable(() -> floristeriaRepository.save(newStore))
+        return Mono.fromCallable(() -> tiendaRepository.save(newStore))
                 .flatMap(savedStore -> converter.fromFloristeriaEntityToDto(savedStore))
+                .log("Tienda guardada con éxito " + newStore)
                 .onErrorResume(throwable -> {
                     log.error("Error al crear una floristería", throwable);
                     return Mono.error(new StoreCreationException("No se pudo crear la floristería."));
@@ -66,12 +68,12 @@ public class FloristeriaServiceImpl implements FloristeriaService {
     }
 
     @Override
-    public Mono<FloristeriaDto> updateFloristeria(Long id, String nombre, String pais) {
+    public Mono<TiendaDto> updateFloristeria(String id, String nombre, String pais) {
         return null;
     }
 
     @Override
-    public Mono<Void> deleteFloristeria(Long id) {
+    public Mono<Void> deleteFloristeria(String id) {
         return null;
     }
 }
