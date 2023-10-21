@@ -1,41 +1,15 @@
-# Api_Floristeria_microservices
-ApiRestFull Floristeria con arquiterctura de microservicios
+# A TOMAR EN CUENTA AL MOMENTO DE QUERER USAR LA API
 
-Debemos crear un programa para gestionar el catálogo de productos de una floristería.
+### Opciones de descarga
+* Ve al directorio https://github.com/Luiso-o/Api_Floristeria_microservices y descarga el zip
+* Clona el repositorio desde la terminal con el comando git clone https://github.com/Luiso-o/Api_Floristeria_microservices.git
 
-Este programa debe cumplir con los siguientes requisitos:
-
-* En una floristería, que tiene un nombre, tenemos árboles, flores y decoración.
-* Cada árbol tiene una altura.
-* Las flores tienen un color.
-* La decoración tiene un tipo de material: Madera o plástico.
-* Todos tienen un precio.
-* Una floristería debe tener un stock de cada uno de los productos (árboles, flores y decoración).
-* La floristería tiene un registro del valor total del stock que tiene.
-* Se debe crear una clase "ticket" donde se puedan registrar las compras en una sola lista.
-* En cuanto a las funcionalidades del programa principal (Main), como mínimo, debe incluir las siguientes:
-
-1. Crear Floristería.
-2. Agregar Árbol.
-3. Agregar Flor.
-4. Agregar Decoración.
-5. Stock: Imprimir por pantalla todos los árboles, flores y decoraciones que tiene la floristería.
-6. Retirar Árbol.
-7. Retirar Flor.
-8. Retirar Decoración.
-9. Imprimir por pantalla el stock con cantidades.
-10. Imprimir por pantalla el valor total de la floristería.
-11. Crear tickets de compra con múltiples objetos.
-12. Mostrar una lista de compras antiguas.
-13. Visualizar el total de dinero ganado con todas las ventas.
-
-
+### Versiones que debes usar
 - SPRING VERSION 3.1.14
 - JAVA VERSION 17.0.1
-- LOCALHOST 8080
-- /swagger-ui/index.html#/
 - GRADLE VERSION 8.2.1
 - KOTLIN VERSION 1.8.20
+- MongoDB VERSION 6.0.6
 
 
 
