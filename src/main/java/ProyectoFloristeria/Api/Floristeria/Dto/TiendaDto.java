@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @ApiModel(description = "DTO para representar una floristería")
 public class TiendaDto {
 
-    @Schema(description = "Identificador único de Floristeria",example = "1")
+    @Schema(description = "Identificador único de Floristeria",example = "6534da9376380c7b7ccdde67")
     private String idFloristeria;
     @Schema(description = "Nombre de la floristeria", example = "Amapola")
     private String nombre;

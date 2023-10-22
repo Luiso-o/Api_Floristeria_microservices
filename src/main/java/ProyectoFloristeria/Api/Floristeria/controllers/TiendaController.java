@@ -36,7 +36,7 @@ public class TiendaController {
 
     @Operation(summary = "Selecciona una tienda")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Tienda encontrada"),
+            @ApiResponse(responseCode = "200", description = "Tienda encontrada"),
             @ApiResponse(responseCode = "500", description = "Error interno, por favor revisar consola")
     })
     @GetMapping("getOne")

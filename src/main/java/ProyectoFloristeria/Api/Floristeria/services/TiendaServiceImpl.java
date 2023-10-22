@@ -28,7 +28,7 @@ public class TiendaServiceImpl implements TiendaService {
     public Flux<TiendaDto> getAllStores() {
         return tiendaRepository.findAll()
                 .flatMap(tienda -> converter.fromFloristeriaEntityToDto(Mono.just(tienda)))
-                .log("Obtenidas todas las tiendas con éxito");
+                .log("Lista de tiendas obtenida con éxito");
     }
 
     @Override
@@ -38,7 +38,7 @@ public class TiendaServiceImpl implements TiendaService {
                 .flatMap(store -> {
                     if (store != null) {
                         log.info("Floristería encontrada con éxito: {}", store);
-                        TiendaDto dto = converter.floristeriaDto(store);
+                        TiendaDto dto = converter.toTiendaDto(store);
                         return Mono.just(dto);
                     } else {
                         log.warn("No se encontró la floristería con el ID: {}", id);
@@ -59,14 +59,14 @@ public class TiendaServiceImpl implements TiendaService {
                 .misProductos(new ArrayList<>())
                 .tickets(new ArrayList<>())
                 .build();
-        log.info("Tienda creada con éxito");
+        log.info("Tienda creada con éxito " + newStore);
 
         return Mono.fromCallable(() -> tiendaRepository.save(newStore))
                 .flatMap(savedStore -> converter.fromFloristeriaEntityToDto(savedStore))
                 .log("Tienda guardada con éxito " + newStore)
                 .onErrorResume(throwable -> {
-                    log.error("Error al crear una floristería", throwable);
-                    return Mono.error(new StoreCreationException("No se pudo crear la floristería."));
+                    log.error("Error al guardar la floristería", throwable);
+                    return Mono.error(new StoreCreationException("No se pudo guardar la floristería."));
                 });
     }
 
