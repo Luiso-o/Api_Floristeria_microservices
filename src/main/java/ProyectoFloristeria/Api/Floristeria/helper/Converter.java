@@ -1,5 +1,7 @@
 package ProyectoFloristeria.Api.Floristeria.helper;
 
+import ProyectoFloristeria.Api.Floristeria.Documents.ProductoDocument;
+import ProyectoFloristeria.Api.Floristeria.Dto.ProductoDto;
 import ProyectoFloristeria.Api.Floristeria.Dto.TiendaDto;
 import ProyectoFloristeria.Api.Floristeria.Documents.TiendaDocument;
 import org.slf4j.Logger;
@@ -15,15 +17,28 @@ public class Converter {
     private static final Logger log = LoggerFactory.getLogger(Converter.class);
 
     public Mono<TiendaDto> fromFloristeriaEntityToDto(Mono<TiendaDocument> store){
-        return store.map(this::floristeriaDto);
+        return store.map(this::toTiendaDto);
     }
 
-    public TiendaDto floristeriaDto(TiendaDocument store){
+    public Mono<ProductoDto> formProductDocumentToProductDto(Mono<ProductoDocument> productoDocumentMono){
+        return productoDocumentMono.map(this::toProductoDto);
+    }
+
+    public TiendaDto toTiendaDto(TiendaDocument store){
         return TiendaDto.builder()
                 .idFloristeria(store.getIdTienda())
                 .nombre(store.getNombre())
                 .fechaDeApertura(store.getFechaApertura())
                 .pais(store.getPais())
+                .build();
+    }
+
+    public ProductoDto toProductoDto(ProductoDocument productoDocument){
+        return ProductoDto.builder()
+                .idProducto(productoDocument.getIdProducto())
+                .tipoProducto(productoDocument.getTipoProducto())
+                .parametroGenerico(productoDocument.getParametroGenerico())
+                .precio(productoDocument.getPrecio())
                 .build();
     }
 
