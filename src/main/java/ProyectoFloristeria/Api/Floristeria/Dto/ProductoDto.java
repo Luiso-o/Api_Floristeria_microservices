@@ -15,7 +15,7 @@ public class ProductoDto {
     @Schema(description = "Puede ser : Arbol, Flor o Decoración",example = "ARBOL")
     private TipoProducto tipoProducto;
     @Schema(description = "Puede ser tamaño, color o material dependiendo del tipo",example = "Plástico")
-    private Object parametroGenerico;
+    private Object caracteristica;
     @Schema(description = "Valor del producto",example = "9.99")
     private double precio;
 }

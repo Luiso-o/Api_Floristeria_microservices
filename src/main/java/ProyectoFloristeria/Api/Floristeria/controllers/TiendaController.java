@@ -14,7 +14,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/v1/floristeria")
+@RequestMapping("/api/v2/floristeria")
 public class TiendaController {
 
     @Autowired

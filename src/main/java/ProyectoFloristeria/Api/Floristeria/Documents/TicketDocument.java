@@ -1,8 +1,10 @@
 package ProyectoFloristeria.Api.Floristeria.Documents;
 
 import lombok.*;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.LocalDate;
@@ -15,7 +17,7 @@ import java.util.List;
 @Document(collection = "tickets")
 public class TicketDocument {
     @MongoId
-    private String idTicket;
+    private String id;
     @Field(name = "fechaDeCreacion")
     private LocalDate fechaDeCreacion;
     @Field(name = "nombreDeLaTienda")
