@@ -16,7 +16,7 @@ public class Converter {
     private static final Pattern LONG_PATTERN = Pattern.compile("^[0-9a-fA-F]{24}$");
     private static final Logger log = LoggerFactory.getLogger(Converter.class);
 
-    public Mono<TiendaDto> fromFloristeriaEntityToDto(Mono<TiendaDocument> store){
+    public Mono<TiendaDto> fromFloristeriaDocumentToDto(Mono<TiendaDocument> store){
         return store.map(this::toTiendaDto);
     }
 
@@ -26,7 +26,7 @@ public class Converter {
 
     public TiendaDto toTiendaDto(TiendaDocument store){
         return TiendaDto.builder()
-                .idFloristeria(store.getIdTienda())
+                .idFloristeria(store.getId())
                 .nombre(store.getNombre())
                 .fechaDeApertura(store.getFechaApertura())
                 .pais(store.getPais())
@@ -35,9 +35,9 @@ public class Converter {
 
     public ProductoDto toProductoDto(ProductoDocument productoDocument){
         return ProductoDto.builder()
-                .idProducto(productoDocument.getIdProducto())
+                .idProducto(productoDocument.getId())
                 .tipoProducto(productoDocument.getTipoProducto())
-                .parametroGenerico(productoDocument.getParametroGenerico())
+                .caracteristica(productoDocument.getParametroGenerico())
                 .precio(productoDocument.getPrecio())
                 .build();
     }

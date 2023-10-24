@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.*;
 @Document(collection = "Productos")
 public class ProductoDocument {
     @MongoId
-    private String idProducto;
+    private String id;
     @Field(name = "tipoProducto")
     private TipoProducto tipoProducto;
     @Field(name = "Caracteristica")

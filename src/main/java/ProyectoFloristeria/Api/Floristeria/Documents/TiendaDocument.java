@@ -16,7 +16,7 @@ import java.util.List;
 @Document(collection = "Tiendas")
 public class TiendaDocument {
     @MongoId
-    private String idTienda;
+    private String id;
     @Field(name = "nombre")
     private String nombre;
     @Field(name = "fechaDeApertura")

@@ -12,8 +12,8 @@ public interface ProductoService {
     Mono<ProductoDto> createTree(Double altura,Double precio, String idTienda);
     Mono<ProductoDto> createFlower(String color,Double precio, String idTienda);
     Mono<ProductoDto> createDecor(MaterialesDecoracion material, Double precio, String idTienda);
-    Mono<ProductoDto> updateProduct(String idProducto, TipoProducto tipo, Object parametro, Double precio, String idTienda);
-    Mono<Void> deleteTree(String idArbol);
-    Mono<Void> deleteFlower(String idFlor);
-    Mono<Void> deleteDecor(String idDecor);
+    Mono<ProductoDto> updateTree(String idTree,Double altura, Double precio);
+    Mono<ProductoDto> updateFlower(String idFlower,String color, Double precio);
+    Mono<ProductoDto> updateDecor(String idDecor,MaterialesDecoracion material, Double precio);
+    Mono<Void> deleteProduct(String idProduct);
 }
