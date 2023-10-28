@@ -2,6 +2,7 @@ package ProyectoFloristeria.Api.Floristeria.Documents;
 
 import ProyectoFloristeria.Api.Floristeria.enumeraciones.PaisesSucursales;
 import lombok.*;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.MongoId;
@@ -23,8 +24,8 @@ public class TiendaDocument {
     private LocalDate fechaApertura;
     @Field(name = "pais")
     private PaisesSucursales pais;
-    @Field(name = "productos")
+    @Field(name = "Productos")
     private List<ProductoDocument> misProductos;
-    @Field(name = "tickets")
+    @Field(name = "Tickets")
     private List<TicketDocument>tickets;
 }
