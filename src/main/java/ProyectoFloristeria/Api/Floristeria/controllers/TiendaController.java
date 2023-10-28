@@ -1,5 +1,6 @@
 package ProyectoFloristeria.Api.Floristeria.controllers;
 
+import ProyectoFloristeria.Api.Floristeria.Documents.ProductoDocument;
 import ProyectoFloristeria.Api.Floristeria.Dto.TiendaDto;
 import ProyectoFloristeria.Api.Floristeria.enumeraciones.PaisesSucursales;
 import ProyectoFloristeria.Api.Floristeria.services.TiendaServiceImpl;
@@ -84,6 +85,18 @@ public class TiendaController {
     public ResponseEntity<Flux<TiendaDto>> getAllStores() {
         Flux<TiendaDto> allStores = tiendaService.getAllStores();
         return ResponseEntity.ok(allStores);
+    }
+
+    //Arreglar
+    @Operation(summary = "Ver stock de una tienda")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operación realizada con éxito"),
+            @ApiResponse(responseCode = "500", description = "Error interno, por favor revisar consola")
+    })
+    @GetMapping("/getAllProducts")
+    public ResponseEntity<Flux<ProductoDocument>> getAllProductsOfTheStore(@RequestParam String idStore) {
+        Flux<ProductoDocument> allProducts = tiendaService.findAllProductsOfTheStore(idStore);
+        return ResponseEntity.ok(allProducts);
     }
 
 

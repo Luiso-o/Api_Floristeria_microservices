@@ -1,4 +1,6 @@
 package ProyectoFloristeria.Api.Floristeria.services;
+
+import ProyectoFloristeria.Api.Floristeria.Documents.ProductoDocument;
 import ProyectoFloristeria.Api.Floristeria.Dto.TiendaDto;
 import ProyectoFloristeria.Api.Floristeria.Documents.TiendaDocument;
 import ProyectoFloristeria.Api.Floristeria.enumeraciones.PaisesSucursales;
@@ -110,4 +112,20 @@ public class TiendaServiceImpl implements TiendaService {
                     }
                 });
     }
+
+    //arreglar
+    @Override
+    public Flux<ProductoDocument> findAllProductsOfTheStore(String idStore) {
+        String idVerificado = converter.verificaId(idStore);
+        return tiendaRepository.findById(idVerificado)
+                .flatMapMany(tienda -> {
+                    if (tienda != null) {
+                        return Flux.fromIterable(tienda.getMisProductos());
+                    } else {
+                        return Flux.error(new StoreNotFoundException("No se encontró la tienda con el ID: " + idVerificado));
+                    }
+                });
+    }
+
+
 }

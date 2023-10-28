@@ -4,6 +4,7 @@ import ProyectoFloristeria.Api.Floristeria.Dto.ProductoDto;
 import ProyectoFloristeria.Api.Floristeria.Dto.TiendaDto;
 import ProyectoFloristeria.Api.Floristeria.enumeraciones.MaterialesDecoracion;
 import ProyectoFloristeria.Api.Floristeria.enumeraciones.PaisesSucursales;
+import ProyectoFloristeria.Api.Floristeria.enumeraciones.TipoProducto;
 import ProyectoFloristeria.Api.Floristeria.services.ProductoServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -106,5 +107,33 @@ public class ProductoController {
                 .map(arbolModificado -> ResponseEntity.status(HttpStatus.OK).body(arbolModificado));
     }
 
+    @Operation(summary = "Modifica datos de una flor existente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Flor modificada correctamente"),
+            @ApiResponse(responseCode = "500", description = "Error interno, por favor revisar consola")
+    })
+    @PutMapping("updateFlower")
+    public Mono<ResponseEntity<ProductoDto>> modificarFlor(
+            @RequestParam String idFlor,
+            @RequestParam String color,
+            @RequestParam double precio
+    ) {
+        return productoService.updateFlower(idFlor,color,precio)
+                .map(florModificada -> ResponseEntity.status(HttpStatus.OK).body(florModificada));
+    }
 
+    @Operation(summary = "Modifica datos de una decoración existente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Decoración modificada correctamente"),
+            @ApiResponse(responseCode = "500", description = "Error interno, por favor revisar consola")
+    })
+    @PutMapping("updateDecor")
+    public Mono<ResponseEntity<ProductoDto>> modificarDecoracion(
+            @RequestParam String idDecor,
+            @RequestParam MaterialesDecoracion material,
+            @RequestParam double precio
+    ) {
+        return productoService.updateDecor(idDecor,material,precio)
+                .map(decorModificada -> ResponseEntity.status(HttpStatus.OK).body(decorModificada));
+    }
 }

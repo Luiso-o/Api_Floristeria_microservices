@@ -18,4 +18,6 @@ public class ProductoDocument {
     private Object parametroGenerico;
     @Field(name = "precio")
     private double precio;
+    @DBRef
+    private TiendaDocument tienda;
 }
