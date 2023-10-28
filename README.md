@@ -1,4 +1,4 @@
-# A TOMAR EN CUENTA AL MOMENTO DE QUERER USAR LA API
+## A TOMAR EN CUENTA AL MOMENTO DE QUERER USAR LA API
 
 ### Opciones de descarga
 * Ve al directorio https://github.com/Luiso-o/Api_Floristeria_microservices y descarga el zip
@@ -11,5 +11,9 @@
 - KOTLIN VERSION 1.8.20
 - MongoDB VERSION 6.0.6
 
+### Debes tener instalado:
+- MongoDB 
+- Docker
+- Intellij idea o tu IDE de preferencia
 
 
