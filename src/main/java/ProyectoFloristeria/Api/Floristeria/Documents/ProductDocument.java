@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.*;
 @AllArgsConstructor
 @Builder
 @Document(collection = "Productos")
-public class ProductoDocument {
+public class ProductDocument {
     @MongoId
     private String id;
     @Field(name = "tipoProducto")
@@ -19,5 +19,5 @@ public class ProductoDocument {
     @Field(name = "precio")
     private double precio;
     @DBRef
-    private TiendaDocument tienda;
+    private StoreDocument tienda;
 }
