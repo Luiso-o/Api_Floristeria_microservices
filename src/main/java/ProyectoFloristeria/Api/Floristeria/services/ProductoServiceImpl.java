@@ -1,16 +1,16 @@
 package ProyectoFloristeria.Api.Floristeria.services;
 
-import ProyectoFloristeria.Api.Floristeria.Documents.ProductoDocument;
-import ProyectoFloristeria.Api.Floristeria.Documents.TiendaDocument;
+import ProyectoFloristeria.Api.Floristeria.Documents.ProductDocument;
+import ProyectoFloristeria.Api.Floristeria.Documents.StoreDocument;
 import ProyectoFloristeria.Api.Floristeria.Dto.ProductoDto;
 import ProyectoFloristeria.Api.Floristeria.enumeraciones.MaterialesDecoracion;
 import ProyectoFloristeria.Api.Floristeria.enumeraciones.TipoProducto;
 import ProyectoFloristeria.Api.Floristeria.excepciones.ProductCreationException;
 import ProyectoFloristeria.Api.Floristeria.excepciones.ProductNotFountException;
 import ProyectoFloristeria.Api.Floristeria.excepciones.StoreNotFoundException;
-import ProyectoFloristeria.Api.Floristeria.helper.Converter;
-import ProyectoFloristeria.Api.Floristeria.repositories.ProductoRepository;
-import ProyectoFloristeria.Api.Floristeria.repositories.TiendaRepository;
+import ProyectoFloristeria.Api.Floristeria.helper.DocumentToDtoConverter;
+import ProyectoFloristeria.Api.Floristeria.repositories.ProductRepository;
+import ProyectoFloristeria.Api.Floristeria.repositories.StoreRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,23 +19,22 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.IntStream;
 
 @Service
 public class ProductoServiceImpl implements ProductoService{
     private static final Logger log = LoggerFactory.getLogger(ProductoServiceImpl.class);
     @Autowired
-    private ProductoRepository productoRepository;
+    private ProductRepository productoRepository;
     @Autowired
-    private TiendaRepository tiendaRepository;
+    private StoreRepository tiendaRepository;
     @Autowired
-    private Converter converter;
+    private DocumentToDtoConverter converter;
 
     @Override
     public Flux<ProductoDto> getAllProducts() {
         return productoRepository.findAll()
-                .flatMap(productos -> converter.formProductDocumentToProductDto(Mono.just(productos)))
+                .flatMap(productos -> converter.convertProductDocumentToProductDto(Mono.just(productos)))
                 .log("Lista de productos obtenidas con éxito");
     }
 
@@ -59,9 +58,9 @@ public class ProductoServiceImpl implements ProductoService{
     @Override
     public Mono<ProductoDto> createTree(Double altura, Double precio, String idTienda) {
         String idVerificado = converter.verificaId(idTienda);
-        Mono<TiendaDocument> tienda = tiendaRepository.findById(idVerificado);
+        Mono<StoreDocument> tienda = tiendaRepository.findById(idVerificado);
 
-        ProductoDocument newTree = ProductoDocument.builder()
+        ProductDocument newTree = ProductDocument.builder()
                 .tipoProducto(TipoProducto.ARBOL)
                 .parametroGenerico(altura)
                 .precio(precio)
@@ -79,7 +78,7 @@ public class ProductoServiceImpl implements ProductoService{
                                     return tiendaRepository.save(miTienda)
                                             .flatMap(savedStore -> {
                                                 log.info("Nuevo árbol guardado en la tienda correctamente");
-                                                return converter.formProductDocumentToProductDto(Mono.just(savedTree));
+                                                return converter.convertProductDocumentToProductDto(Mono.just(savedTree));
                                             });
                                 } else {
                                     log.error("No se encontró la tienda con id " + idVerificado + ". No se puede guardar el árbol en la tienda");
@@ -93,9 +92,9 @@ public class ProductoServiceImpl implements ProductoService{
     @Override
     public Mono<ProductoDto> createFlower(String color, Double precio, String idTienda) {
         String idVerificado = converter.verificaId(idTienda);
-        Mono<TiendaDocument> tienda = tiendaRepository.findById(idVerificado);
+        Mono<StoreDocument> tienda = tiendaRepository.findById(idVerificado);
 
-        ProductoDocument newFlower = ProductoDocument.builder()
+        ProductDocument newFlower = ProductDocument.builder()
                 .tipoProducto(TipoProducto.FLOR)
                 .parametroGenerico(color)
                 .precio(precio)
@@ -113,7 +112,7 @@ public class ProductoServiceImpl implements ProductoService{
                                     return tiendaRepository.save(miTienda)
                                             .flatMap(savedStore -> {
                                                 log.info("Nueva flor guardada en la tienda correctamente");
-                                                return converter.formProductDocumentToProductDto(Mono.just(savedFlower));
+                                                return converter.convertProductDocumentToProductDto(Mono.just(savedFlower));
                                             });
                                 } else {
                                     log.error("No se encontró la tienda con id " + idVerificado + ". No se puede guardar la flor en la tienda");
@@ -126,9 +125,9 @@ public class ProductoServiceImpl implements ProductoService{
     @Override
     public Mono<ProductoDto> createDecor(MaterialesDecoracion material, Double precio, String idTienda) {
         String idVerificado = converter.verificaId(idTienda);
-        Mono<TiendaDocument> tienda = tiendaRepository.findById(idVerificado);
+        Mono<StoreDocument> tienda = tiendaRepository.findById(idVerificado);
 
-        ProductoDocument newTree = ProductoDocument.builder()
+        ProductDocument newTree = ProductDocument.builder()
                 .tipoProducto(TipoProducto.DECORACION)
                 .parametroGenerico(material)
                 .precio(precio)
@@ -146,7 +145,7 @@ public class ProductoServiceImpl implements ProductoService{
                                     return tiendaRepository.save(miTienda)
                                             .flatMap(savedStore -> {
                                                 log.info("Nueva decoración guardada en la tienda correctamente");
-                                                return converter.formProductDocumentToProductDto(Mono.just(savedDecor));
+                                                return converter.convertProductDocumentToProductDto(Mono.just(savedDecor));
                                             });
                                 } else {
                                     log.error("No se encontró la tienda con id " + idVerificado + ". No se puede guardar la decoración en la tienda");
@@ -174,7 +173,7 @@ public class ProductoServiceImpl implements ProductoService{
                             return actualizarProductoDeTienda(Mono.just(arbolModificado))
                                     .then(productoRepository.save(arbolModificado))
                                     .log("El árbol se ha guardado con sus nuevas modificaciones correctamente")
-                                    .flatMap(savedTree -> converter.formProductDocumentToProductDto(Mono.just(savedTree)));
+                                    .flatMap(savedTree -> converter.convertProductDocumentToProductDto(Mono.just(savedTree)));
                         }
                     } else {
                         log.warn("No se encontró el árbol con el ID: {}", idValidado);
@@ -202,7 +201,7 @@ public class ProductoServiceImpl implements ProductoService{
                             return actualizarProductoDeTienda(Mono.just(florModificada))
                                     .then(productoRepository.save(florModificada))
                                     .log("La flor se ha guardado con sus nuevas modificaciones correctamente")
-                                    .flatMap(savedFlower -> converter.formProductDocumentToProductDto(Mono.just(savedFlower)));
+                                    .flatMap(savedFlower -> converter.convertProductDocumentToProductDto(Mono.just(savedFlower)));
                         }
                     } else {
                         log.warn("No se encontró la flor con el ID: {}", idValidado);
@@ -231,7 +230,7 @@ public class ProductoServiceImpl implements ProductoService{
                             return actualizarProductoDeTienda(Mono.just(decorModificado))
                                     .then(productoRepository.save(decorModificado))
                                     .log("La decoración se ha guardado con sus nuevas modificaciones correctamente")
-                                    .flatMap(savedDecor -> converter.formProductDocumentToProductDto(Mono.just(savedDecor)));
+                                    .flatMap(savedDecor -> converter.convertProductDocumentToProductDto(Mono.just(savedDecor)));
                         }
                     } else {
                         log.warn("No se encontró la decoración con el ID: {}", idValidado);
@@ -243,15 +242,16 @@ public class ProductoServiceImpl implements ProductoService{
 
     @Override
     public Mono<Void> deleteProduct(String idProduct){
-        return null;
+        String idValidado = converter.verificaId(idProduct);
+        return productoRepository.deleteById(idValidado);
     }
 
-    private Mono<Void> actualizarProductoDeTienda(Mono<ProductoDocument> productoDocumentMono) {
+    private Mono<Void> actualizarProductoDeTienda(Mono<ProductDocument> productoDocumentMono) {
         return productoDocumentMono.flatMap(productoAActualizar -> {
-            Mono<TiendaDocument> tiendaMono = Mono.just(productoAActualizar.getTienda());
+            Mono<StoreDocument> tiendaMono = Mono.just(productoAActualizar.getTienda());
 
             return tiendaMono.flatMap(tienda -> {
-                List<ProductoDocument> productosDeTienda = tienda.getMisProductos();
+                List<ProductDocument> productosDeTienda = tienda.getMisProductos();
 
                 int indice = IntStream.range(0, productosDeTienda.size())
                         .filter(i -> productosDeTienda.get(i).getId()

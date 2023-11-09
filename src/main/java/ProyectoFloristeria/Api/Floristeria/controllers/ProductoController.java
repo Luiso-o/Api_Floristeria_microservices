@@ -136,4 +136,16 @@ public class ProductoController {
         return productoService.updateDecor(idDecor,material,precio)
                 .map(decorModificada -> ResponseEntity.status(HttpStatus.OK).body(decorModificada));
     }
+
+    @Operation(summary = "Elimina un producto de la base de datos")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Producto eliminado correctamente"),
+            @ApiResponse(responseCode = "500", description = "Error interno, por favor revisar consola")
+    })
+    @DeleteMapping("delete")
+    public Mono<Void> eliminarDecoracion(
+            @RequestParam String idProducto
+    ) {
+        return productoService.deleteProduct(idProducto);
+    }
 }

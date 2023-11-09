@@ -2,7 +2,6 @@ package ProyectoFloristeria.Api.Floristeria.Documents;
 
 import ProyectoFloristeria.Api.Floristeria.enumeraciones.PaisesSucursales;
 import lombok.*;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.MongoId;
@@ -15,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Document(collection = "Tiendas")
-public class TiendaDocument {
+public class StoreDocument {
     @MongoId
     private String id;
     @Field(name = "nombre")
@@ -25,7 +24,7 @@ public class TiendaDocument {
     @Field(name = "pais")
     private PaisesSucursales pais;
     @Field(name = "Productos")
-    private List<ProductoDocument> misProductos;
+    private List<ProductDocument> misProductos;
     @Field(name = "Tickets")
     private List<TicketDocument>tickets;
 }

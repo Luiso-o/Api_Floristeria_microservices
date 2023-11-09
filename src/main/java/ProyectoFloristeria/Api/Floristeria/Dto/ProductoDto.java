@@ -1,6 +1,5 @@
 package ProyectoFloristeria.Api.Floristeria.Dto;
 
-import ProyectoFloristeria.Api.Floristeria.Documents.TiendaDocument;
 import ProyectoFloristeria.Api.Floristeria.enumeraciones.TipoProducto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;

@@ -1,13 +1,16 @@
 package ProyectoFloristeria.Api.Floristeria.services;
 
-import ProyectoFloristeria.Api.Floristeria.Documents.ProductoDocument;
+import ProyectoFloristeria.Api.Floristeria.Documents.ProductDocument;
+import ProyectoFloristeria.Api.Floristeria.Dto.ProductoDto;
 import ProyectoFloristeria.Api.Floristeria.Dto.TiendaDto;
-import ProyectoFloristeria.Api.Floristeria.Documents.TiendaDocument;
+import ProyectoFloristeria.Api.Floristeria.Documents.StoreDocument;
 import ProyectoFloristeria.Api.Floristeria.enumeraciones.PaisesSucursales;
+import ProyectoFloristeria.Api.Floristeria.enumeraciones.TipoProducto;
 import ProyectoFloristeria.Api.Floristeria.excepciones.StoreCreationException;
 import ProyectoFloristeria.Api.Floristeria.excepciones.StoreNotFoundException;
-import ProyectoFloristeria.Api.Floristeria.helper.Converter;
-import ProyectoFloristeria.Api.Floristeria.repositories.TiendaRepository;
+import ProyectoFloristeria.Api.Floristeria.helper.DocumentToDtoConverter;
+import ProyectoFloristeria.Api.Floristeria.repositories.ProductRepository;
+import ProyectoFloristeria.Api.Floristeria.repositories.StoreRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,26 +20,32 @@ import reactor.core.publisher.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class TiendaServiceImpl implements TiendaService {
     private static final Logger log = LoggerFactory.getLogger(TiendaServiceImpl.class);
     @Autowired
-    private TiendaRepository tiendaRepository;
+    private StoreRepository storeRepository;
     @Autowired
-    private Converter converter;
+    private DocumentToDtoConverter converter;
+    @Autowired
+    private ProductRepository productRepository;
 
     @Override
     public Flux<TiendaDto> getAllStores() {
-        return tiendaRepository.findAll()
-                .flatMap(tienda -> converter.fromFloristeriaDocumentToDto(Mono.just(tienda)))
+        return storeRepository.findAll()
+                .flatMap(tienda -> converter.convertStoreDocumentToDto(Mono.just(tienda)))
                 .log("Lista de tiendas obtenida con éxito");
     }
 
     @Override
     public Mono<TiendaDto> getStoreById(String id) {
         String idVerificado = converter.verificaId(id);
-        return tiendaRepository.findById(idVerificado)
+        return storeRepository.findById(idVerificado)
                 .flatMap(store -> {
                     if (store != null) {
                         log.info("Floristería encontrada con éxito: {}", store);
@@ -54,7 +63,7 @@ public class TiendaServiceImpl implements TiendaService {
     public Mono<TiendaDto> createStore(String nombre, PaisesSucursales pais) {
         String nombreVerificado = nombre.isEmpty() || nombre.isBlank() ? "Mi floristería" : nombre;
 
-        TiendaDocument newStore = TiendaDocument.builder()
+        StoreDocument newStore = StoreDocument.builder()
                 .fechaApertura(LocalDate.now())
                 .nombre(nombreVerificado)
                 .pais(pais)
@@ -63,8 +72,8 @@ public class TiendaServiceImpl implements TiendaService {
                 .build();
         log.info("Tienda creada con éxito " + newStore);
 
-        return Mono.fromCallable(() -> tiendaRepository.save(newStore))
-                .flatMap(savedStore -> converter.fromFloristeriaDocumentToDto(savedStore))
+        return Mono.fromCallable(() -> storeRepository.save(newStore))
+                .flatMap(savedStore -> converter.convertStoreDocumentToDto(savedStore))
                 .log("Tienda guardada con éxito " + newStore)
                 .onErrorResume(throwable -> {
                     log.error("Error al guardar la floristería", throwable);
@@ -77,17 +86,17 @@ public class TiendaServiceImpl implements TiendaService {
         String idVerificado = converter.verificaId(id);
         String nombreVerificado = nombre.isEmpty() || nombre.isBlank() ? "Mi floristería" : nombre;
 
-        return tiendaRepository.findById(idVerificado)
+        return storeRepository.findById(idVerificado)
                 .flatMap(tiendaModificada -> {
                     if(tiendaModificada != null){
                         tiendaModificada.setNombre(nombreVerificado);
                         tiendaModificada.setPais(pais);
                         log.info("Tienda modificada con éxito");
 
-                        return tiendaRepository.save(tiendaModificada)
+                        return storeRepository.save(tiendaModificada)
                                 .log("Tienda Guardada con éxito ")
                                 .flatMap(savedStore ->
-                                        converter.fromFloristeriaDocumentToDto(Mono.just(savedStore)));
+                                        converter.convertStoreDocumentToDto(Mono.just(savedStore)));
                     }else{
                         log.warn("No se encontró la floristería con el ID: {}", idVerificado);
                         return Mono.empty();
@@ -100,10 +109,10 @@ public class TiendaServiceImpl implements TiendaService {
     public Mono<Void> deleteStore(String id) {
         String idVerificado = converter.verificaId(id);
 
-        return tiendaRepository.findById(idVerificado)
+        return storeRepository.findById(idVerificado)
                 .flatMap(tiendaAEliminar ->{
                     if(tiendaAEliminar != null){
-                        return tiendaRepository.delete(tiendaAEliminar)
+                        return storeRepository.delete(tiendaAEliminar)
                                 .log("Tienda eliminada con éxito")
                                 .then();
                     }else{
@@ -113,19 +122,88 @@ public class TiendaServiceImpl implements TiendaService {
                 });
     }
 
-    //arreglar
     @Override
-    public Flux<ProductoDocument> findAllProductsOfTheStore(String idStore) {
+    public Flux<ProductoDto> findAllProductsOfTheStore(String idStore) {
         String idVerificado = converter.verificaId(idStore);
-        return tiendaRepository.findById(idVerificado)
-                .flatMapMany(tienda -> {
-                    if (tienda != null) {
-                        return Flux.fromIterable(tienda.getMisProductos());
-                    } else {
-                        return Flux.error(new StoreNotFoundException("No se encontró la tienda con el ID: " + idVerificado));
+        Mono<StoreDocument> tienda = storeRepository.findById(idVerificado);
+
+        return tienda.flatMapMany(tiendaDocument -> {
+            List<ProductDocument> productos = tiendaDocument.getMisProductos();
+            List<Mono<ProductoDto>> monoProductDtos = productos.stream()
+                    .map(productoDocument -> converter.convertProductDocumentToProductDto(Mono.just(productoDocument)))
+                    .collect(Collectors.toList());
+
+            return Flux.concat(monoProductDtos);
+        });
+    }
+
+    @Override
+    public Mono<Void> deleteProductOfTheStore(String idProduct) {
+        String idVerificado = converter.verificaId(idProduct);
+
+        return productRepository.findById(idVerificado)
+                .flatMap(producto -> {
+                    if(producto != null){
+                        StoreDocument tienda = producto.getTienda();
+                        if(tienda != null){
+                            tienda.getMisProductos().remove(producto);
+                            return storeRepository.save(tienda)
+                                    .then(Mono.empty());
+                        }else{
+                            return Mono.error(new StoreNotFoundException("El producto no está asociado a ninguna tienda"));
+                        }
+                    }else {
+                        return Mono.empty();
                     }
                 });
     }
 
+    @Override
+    public Mono<Map<String, Integer>> showStockOfTheStore(String idStore) {
+        String idVerificado = converter.verificaId(idStore);
+
+        return storeRepository.findById(idVerificado)
+                .flatMap(store -> {
+                    if(store != null){
+                        List<ProductDocument> products = store.getMisProductos();
+                        int arboles = 0, flores = 0, decoraciones = 0;
+
+                        for (ProductDocument product : products){
+                            if(product.getTipoProducto() == TipoProducto.ARBOL){
+                                arboles ++;
+                            } else if (product.getTipoProducto() == TipoProducto.FLOR) {
+                                flores ++;
+                            }else{
+                                decoraciones ++;
+                            }
+                        }
+
+                        Map<String, Integer> stockMap = new HashMap<>();
+                        stockMap.put("Cantidad de Árboles ", arboles);
+                        stockMap.put("Cantidad de Flores ", flores);
+                        stockMap.put("Cantidad de Decoraciones ", decoraciones);
+
+                        return Mono.just(stockMap);
+                    }else{
+                        log.error("No se encontró ninguna tienda con el id " + idStore);
+                        return  Mono.error(new StoreNotFoundException("La tienda no se encuentra"));
+                    }
+                });
+    }
+
+    public Mono<Double> watchTheStorePrice(String idStore){
+        String idVerificado = converter.verificaId(idStore);
+        return storeRepository.findById(idVerificado)
+                .flatMap(store -> {
+                    if(store != null){
+                        List<ProductDocument> products = store.getMisProductos();
+                        double price = products.stream().mapToDouble(ProductDocument::getPrecio).sum();
+                        return Mono.just(price);
+                    }else{
+            log.error("No se encontró ninguna tienda con el id " + idStore);
+            return  Mono.error(new StoreNotFoundException("La tienda no se encuentra"));
+            }
+        });
+    }
 
 }

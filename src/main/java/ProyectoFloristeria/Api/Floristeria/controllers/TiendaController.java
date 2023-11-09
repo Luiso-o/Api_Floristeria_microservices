@@ -1,6 +1,6 @@
 package ProyectoFloristeria.Api.Floristeria.controllers;
 
-import ProyectoFloristeria.Api.Floristeria.Documents.ProductoDocument;
+import ProyectoFloristeria.Api.Floristeria.Dto.ProductoDto;
 import ProyectoFloristeria.Api.Floristeria.Dto.TiendaDto;
 import ProyectoFloristeria.Api.Floristeria.enumeraciones.PaisesSucursales;
 import ProyectoFloristeria.Api.Floristeria.services.TiendaServiceImpl;
@@ -13,6 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v2/floristeria")
@@ -87,17 +90,53 @@ public class TiendaController {
         return ResponseEntity.ok(allStores);
     }
 
-    //Arreglar
     @Operation(summary = "Ver stock de una tienda")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Operación realizada con éxito"),
             @ApiResponse(responseCode = "500", description = "Error interno, por favor revisar consola")
     })
     @GetMapping("/getAllProducts")
-    public ResponseEntity<Flux<ProductoDocument>> getAllProductsOfTheStore(@RequestParam String idStore) {
-        Flux<ProductoDocument> allProducts = tiendaService.findAllProductsOfTheStore(idStore);
-        return ResponseEntity.ok(allProducts);
+    public Flux<ProductoDto> getAllProductsOfTheStore(@RequestParam String idStore) {
+        return tiendaService.findAllProductsOfTheStore(idStore);
     }
 
+    @Operation(summary = "Elimina un producto de una tienda")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Producto eliminado con éxito"),
+            @ApiResponse(responseCode = "500", description = "Error interno, por favor revisar consola")
+    })
+    @DeleteMapping("deleteProduct")
+    public Mono<Void> eliminarProductoDeUnaTienda(
+            @RequestParam String idProducto
+    ) {
+        return tiendaService.deleteProductOfTheStore(idProducto);
+    }
+
+    @Operation(summary = "Ver la cantidad de productos que tiene una tienda")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operación realizada con éxito"),
+            @ApiResponse(responseCode = "500", description = "Error interno, por favor revisar consola")
+    })
+    @GetMapping("showQuantityOfStock")
+    public Mono<Map<String, Integer>>obtenerCantidadDeProductosDeUnaTienda(
+            @RequestParam String idTienda
+    ) {
+        return tiendaService.showStockOfTheStore(idTienda);
+    }
+
+    @Operation(summary = "Ver el precio invertido en el stock de la tienda")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operación realizada con éxito"),
+            @ApiResponse(responseCode = "500", description = "Error interno, por favor revisar consola")
+    })
+    @GetMapping("showPriceOfStock")
+    public HashMap<String, Double> obtenerPrecioDeProductosDeUnaTienda(
+            @RequestParam String idTienda
+    ) {
+        Mono<Double> precio = tiendaService.watchTheStorePrice(idTienda);
+        HashMap<String, Double> response = new HashMap<>();
+        response.put("Precio total de los artículos de la tienda (Euros): ", precio.block());
+        return response;
+    }
 
 }

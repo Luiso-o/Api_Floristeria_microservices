@@ -1,10 +1,9 @@
 package ProyectoFloristeria.Api.Floristeria.Documents;
 
 import lombok.*;
-import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.LocalDate;
@@ -23,5 +22,9 @@ public class TicketDocument {
     @Field(name = "nombreDeLaTienda")
     private String nombreTienda;
     @Field(name = "productos")
-    private List<ProductoDocument> misProductos;
+    private List<ProductDocument> misProductos;
+    @Field(name = "totalDeLaCompra")
+    private Double total;
+    @DBRef
+    private StoreDocument tienda;
 }
