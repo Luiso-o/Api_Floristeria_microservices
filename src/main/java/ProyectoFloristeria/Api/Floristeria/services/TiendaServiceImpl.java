@@ -61,11 +61,10 @@ public class TiendaServiceImpl implements TiendaService {
 
     @Override
     public Mono<TiendaDto> createStore(String nombre, PaisesSucursales pais) {
-        String nombreVerificado = nombre.isEmpty() || nombre.isBlank() ? "Mi floristería" : nombre;
 
         StoreDocument newStore = StoreDocument.builder()
                 .fechaApertura(LocalDate.now())
-                .nombre(nombreVerificado)
+                .nombre(nombre)
                 .pais(pais)
                 .misProductos(new ArrayList<>())
                 .tickets(new ArrayList<>())
