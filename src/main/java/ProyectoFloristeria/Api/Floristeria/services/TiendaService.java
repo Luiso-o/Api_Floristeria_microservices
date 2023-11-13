@@ -1,6 +1,7 @@
 package ProyectoFloristeria.Api.Floristeria.services;
 
 import ProyectoFloristeria.Api.Floristeria.Dto.ProductoDto;
+import ProyectoFloristeria.Api.Floristeria.Dto.TicketDto;
 import ProyectoFloristeria.Api.Floristeria.Dto.TiendaDto;
 import ProyectoFloristeria.Api.Floristeria.enumeraciones.PaisesSucursales;
 import reactor.core.publisher.*;
@@ -16,5 +17,7 @@ public interface TiendaService {
     Flux<ProductoDto>findAllProductsOfTheStore(String idStore);
     Mono<Void> deleteProductOfTheStore(String idProduct);
     Mono<Map<String,Integer>>showStockOfTheStore(String idStore);
-
+    Flux<TicketDto>findAllTicketsOfTheStore(String idStore);
+    Mono<Double> watchTheStorePrice(String idStore);
+    Mono<Double> seeStoreProfits(String idStore);
 }

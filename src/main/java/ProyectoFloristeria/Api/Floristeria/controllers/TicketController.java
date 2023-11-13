@@ -4,9 +4,12 @@ import ProyectoFloristeria.Api.Floristeria.Documents.TicketDocument;
 import ProyectoFloristeria.Api.Floristeria.Dto.TicketDto;
 import ProyectoFloristeria.Api.Floristeria.services.TicketServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,13 +31,15 @@ public class TicketController {
             @ApiResponse(responseCode = "500", description = "Error interno, por favor revisar consola")
     })
     @PostMapping(value = "addTicket")
-    public Mono<TicketDto> createTicket(
+    public ResponseEntity<Mono<TicketDto>> createTicket(
           @RequestParam String idStore,
+          @Parameter(description = "Debe completar esta casilla con el ID del producto.")
           @RequestParam List<String> idProducts
     ){
       Mono<TicketDocument> createdTicket = ticketService.createNewTicket(idStore);
       Mono<TicketDocument> ticketWhitProducts = ticketService.createListOfProducts(idProducts,createdTicket);
-      return ticketService.convertAndSaveTicket(ticketWhitProducts);
+      Mono<TicketDto> ticketDtoMono= ticketService.convertAndSaveTicket(ticketWhitProducts);
+      return ResponseEntity.status(HttpStatus.CREATED).body(ticketDtoMono);
     }
 
 

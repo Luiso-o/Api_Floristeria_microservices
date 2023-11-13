@@ -59,11 +59,13 @@ public class TicketServiceImpl implements TicketService{
 
             return ticketMono.flatMap(ticketDocument -> {
                         ticketDocument.setMisProductos(selectedProducts);
+                        ticketDocument.setTotal(calculateTotal(selectedProducts));
                         return Mono.just(ticketDocument);
                     })
                     .flatMap(updatedTicket -> {
                         allProducts.removeAll(selectedProducts);
                         store.setMisProductos(allProducts);
+                        store.getTickets().add(updatedTicket);
 
                         return storeRepository.save(store)
                                 .thenReturn(updatedTicket)
@@ -79,5 +81,8 @@ public class TicketServiceImpl implements TicketService{
                 .flatMap(savedTicketDocument -> converter.convertTicketDocumentToTicketDto(Mono.just(savedTicketDocument)));
     }
 
+    private double calculateTotal(List<ProductDocument>products){
+        return products.stream().mapToDouble(ProductDocument::getPrecio).sum();
+    }
 
 }
