@@ -1,7 +1,9 @@
 package ProyectoFloristeria.Api.Floristeria.services;
 
 import ProyectoFloristeria.Api.Floristeria.Documents.ProductDocument;
+import ProyectoFloristeria.Api.Floristeria.Documents.TicketDocument;
 import ProyectoFloristeria.Api.Floristeria.Dto.ProductoDto;
+import ProyectoFloristeria.Api.Floristeria.Dto.TicketDto;
 import ProyectoFloristeria.Api.Floristeria.Dto.TiendaDto;
 import ProyectoFloristeria.Api.Floristeria.Documents.StoreDocument;
 import ProyectoFloristeria.Api.Floristeria.enumeraciones.PaisesSucursales;
@@ -137,6 +139,21 @@ public class TiendaServiceImpl implements TiendaService {
     }
 
     @Override
+    public Flux<TicketDto> findAllTicketsOfTheStore(String idStore) {
+        String idVerificado = converter.verificaId(idStore);
+        Mono<StoreDocument> tienda = storeRepository.findById(idVerificado);
+
+        return tienda.flatMapMany(store -> {
+            List<TicketDocument> tickets = store.getTickets();
+            List<Mono<TicketDto>> monoTickets = tickets.stream()
+                   .map(ticketsDocument -> converter.convertTicketDocumentToTicketDto(Mono.just(ticketsDocument)))
+                           .collect(Collectors.toList());
+
+           return  Flux.concat(monoTickets);
+        });
+    }
+
+    @Override
     public Mono<Void> deleteProductOfTheStore(String idProduct) {
         String idVerificado = converter.verificaId(idProduct);
 
@@ -204,5 +221,21 @@ public class TiendaServiceImpl implements TiendaService {
             }
         });
     }
+
+    public Mono<Double> seeStoreProfits(String idStore){
+        String idVerificado = converter.verificaId(idStore);
+        return storeRepository.findById(idVerificado)
+                .flatMap(store -> {
+                    if(store != null){
+                        List<TicketDocument> tickets = store.getTickets();
+                        double total = tickets.stream().mapToDouble(TicketDocument::getTotal).sum();
+                        return Mono.just(total);
+                    }else{
+                        log.error("No se encontró ninguna tienda con el id " + idStore);
+                        return  Mono.error(new StoreNotFoundException("La tienda no se encuentra"));
+                    }
+                });
+    }
+
 
 }

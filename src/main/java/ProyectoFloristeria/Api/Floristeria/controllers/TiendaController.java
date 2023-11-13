@@ -1,6 +1,7 @@
 package ProyectoFloristeria.Api.Floristeria.controllers;
 
 import ProyectoFloristeria.Api.Floristeria.Dto.ProductoDto;
+import ProyectoFloristeria.Api.Floristeria.Dto.TicketDto;
 import ProyectoFloristeria.Api.Floristeria.Dto.TiendaDto;
 import ProyectoFloristeria.Api.Floristeria.enumeraciones.PaisesSucursales;
 import ProyectoFloristeria.Api.Floristeria.services.TiendaServiceImpl;
@@ -100,11 +101,22 @@ public class TiendaController {
         return tiendaService.findAllProductsOfTheStore(idStore);
     }
 
+    @Operation(summary = "Ver Tickets antiguos de una tienda")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operación realizada con éxito"),
+            @ApiResponse(responseCode = "500", description = "Error interno, por favor revisar consola")
+    })
+    @GetMapping("/getAllTickets")
+    public Flux<TicketDto> getAllTicketsOfAStore(@RequestParam String idStore) {
+        return tiendaService.findAllTicketsOfTheStore(idStore);
+    }
+
     @Operation(summary = "Elimina un producto de una tienda")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Producto eliminado con éxito"),
             @ApiResponse(responseCode = "500", description = "Error interno, por favor revisar consola")
     })
+
     @DeleteMapping("deleteProduct")
     public Mono<Void> eliminarProductoDeUnaTienda(
             @RequestParam String idProducto
@@ -136,6 +148,21 @@ public class TiendaController {
         Mono<Double> precio = tiendaService.watchTheStorePrice(idTienda);
         HashMap<String, Double> response = new HashMap<>();
         response.put("Precio total de los artículos de la tienda (Euros): ", precio.block());
+        return response;
+    }
+
+    @Operation(summary = "Ver total de ganancias de una tienda")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operación realizada con éxito"),
+            @ApiResponse(responseCode = "500", description = "Error interno, por favor revisar consola")
+    })
+    @GetMapping("seeStoreProfits")
+    public HashMap<String, Double> obtenerGananciasDeUnaTienda(
+            @RequestParam String idTienda
+    ) {
+        Mono<Double> total = tiendaService.seeStoreProfits(idTienda);
+        HashMap<String, Double> response = new HashMap<>();
+        response.put("El total de ventas de esta tienda es de (Euros): ", total.block());
         return response;
     }
 

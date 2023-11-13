@@ -11,5 +11,4 @@ public interface TicketService {
     Mono<TicketDocument>createNewTicket(String idStore);
     Mono<TicketDocument>createListOfProducts(List<String> products, Mono<TicketDocument> ticket);
     Mono<TicketDto>convertAndSaveTicket(Mono<TicketDocument> ticketDocumentMono);
-
 }
