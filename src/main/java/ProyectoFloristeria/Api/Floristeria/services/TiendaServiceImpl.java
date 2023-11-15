@@ -2,14 +2,14 @@ package ProyectoFloristeria.Api.Floristeria.services;
 
 import ProyectoFloristeria.Api.Floristeria.Documents.ProductDocument;
 import ProyectoFloristeria.Api.Floristeria.Documents.TicketDocument;
-import ProyectoFloristeria.Api.Floristeria.Dto.ProductoDto;
+import ProyectoFloristeria.Api.Floristeria.Dto.ProductDto;
 import ProyectoFloristeria.Api.Floristeria.Dto.TicketDto;
-import ProyectoFloristeria.Api.Floristeria.Dto.TiendaDto;
+import ProyectoFloristeria.Api.Floristeria.Dto.StoreDto;
 import ProyectoFloristeria.Api.Floristeria.Documents.StoreDocument;
-import ProyectoFloristeria.Api.Floristeria.enumeraciones.PaisesSucursales;
-import ProyectoFloristeria.Api.Floristeria.enumeraciones.TipoProducto;
-import ProyectoFloristeria.Api.Floristeria.excepciones.StoreCreationException;
-import ProyectoFloristeria.Api.Floristeria.excepciones.StoreNotFoundException;
+import ProyectoFloristeria.Api.Floristeria.enumeraciones.BranchCountries;
+import ProyectoFloristeria.Api.Floristeria.enumeraciones.ProductType;
+import ProyectoFloristeria.Api.Floristeria.exceptions.StoreCreationException;
+import ProyectoFloristeria.Api.Floristeria.exceptions.StoreNotFoundException;
 import ProyectoFloristeria.Api.Floristeria.helper.DocumentToDtoConverter;
 import ProyectoFloristeria.Api.Floristeria.repositories.ProductRepository;
 import ProyectoFloristeria.Api.Floristeria.repositories.StoreRepository;
@@ -38,20 +38,20 @@ public class TiendaServiceImpl implements TiendaService {
     private ProductRepository productRepository;
 
     @Override
-    public Flux<TiendaDto> getAllStores() {
+    public Flux<StoreDto> getAllStores() {
         return storeRepository.findAll()
                 .flatMap(tienda -> converter.convertStoreDocumentToDto(Mono.just(tienda)))
                 .log("Lista de tiendas obtenida con éxito");
     }
 
     @Override
-    public Mono<TiendaDto> getStoreById(String id) {
+    public Mono<StoreDto> getStoreById(String id) {
         String idVerificado = converter.verificaId(id);
         return storeRepository.findById(idVerificado)
                 .flatMap(store -> {
                     if (store != null) {
                         log.info("Floristería encontrada con éxito: {}", store);
-                        TiendaDto dto = converter.toTiendaDto(store);
+                        StoreDto dto = converter.toTiendaDto(store);
                         return Mono.just(dto);
                     } else {
                         log.warn("No se encontró la floristería con el ID: {}", id);
@@ -62,7 +62,7 @@ public class TiendaServiceImpl implements TiendaService {
     }
 
     @Override
-    public Mono<TiendaDto> createStore(String nombre, PaisesSucursales pais) {
+    public Mono<StoreDto> createStore(String nombre, BranchCountries pais) {
 
         StoreDocument newStore = StoreDocument.builder()
                 .fechaApertura(LocalDate.now())
@@ -83,7 +83,7 @@ public class TiendaServiceImpl implements TiendaService {
     }
 
     @Override
-    public Mono<TiendaDto> updateStore(String id, String nombre, PaisesSucursales pais) {
+    public Mono<StoreDto> updateStore(String id, String nombre, BranchCountries pais) {
         String idVerificado = converter.verificaId(id);
         String nombreVerificado = nombre.isEmpty() || nombre.isBlank() ? "Mi floristería" : nombre;
 
@@ -124,13 +124,13 @@ public class TiendaServiceImpl implements TiendaService {
     }
 
     @Override
-    public Flux<ProductoDto> findAllProductsOfTheStore(String idStore) {
+    public Flux<ProductDto> findAllProductsOfTheStore(String idStore) {
         String idVerificado = converter.verificaId(idStore);
         Mono<StoreDocument> tienda = storeRepository.findById(idVerificado);
 
         return tienda.flatMapMany(tiendaDocument -> {
             List<ProductDocument> productos = tiendaDocument.getMisProductos();
-            List<Mono<ProductoDto>> monoProductDtos = productos.stream()
+            List<Mono<ProductDto>> monoProductDtos = productos.stream()
                     .map(productoDocument -> converter.convertProductDocumentToProductDto(Mono.just(productoDocument)))
                     .collect(Collectors.toList());
 
@@ -185,9 +185,9 @@ public class TiendaServiceImpl implements TiendaService {
                         int arboles = 0, flores = 0, decoraciones = 0;
 
                         for (ProductDocument product : products){
-                            if(product.getTipoProducto() == TipoProducto.ARBOL){
+                            if(product.getTipoProducto() == ProductType.ARBOL){
                                 arboles ++;
-                            } else if (product.getTipoProducto() == TipoProducto.FLOR) {
+                            } else if (product.getTipoProducto() == ProductType.FLOR) {
                                 flores ++;
                             }else{
                                 decoraciones ++;

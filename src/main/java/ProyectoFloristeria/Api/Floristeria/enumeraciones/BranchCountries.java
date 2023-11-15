@@ -1,6 +1,6 @@
 package ProyectoFloristeria.Api.Floristeria.enumeraciones;
 
-public enum PaisesSucursales {
+public enum BranchCountries {
     ESPANYA,
     MEXICO,
     ARGENTINA,

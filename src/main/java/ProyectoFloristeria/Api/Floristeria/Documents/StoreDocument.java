@@ -1,6 +1,6 @@
 package ProyectoFloristeria.Api.Floristeria.Documents;
 
-import ProyectoFloristeria.Api.Floristeria.enumeraciones.PaisesSucursales;
+import ProyectoFloristeria.Api.Floristeria.enumeraciones.BranchCountries;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -22,7 +22,7 @@ public class StoreDocument {
     @Field(name = "fechaDeApertura")
     private LocalDate fechaApertura;
     @Field(name = "pais")
-    private PaisesSucursales pais;
+    private BranchCountries pais;
     @Field(name = "Productos")
     private List<ProductDocument> misProductos;
     @Field(name = "Tickets")

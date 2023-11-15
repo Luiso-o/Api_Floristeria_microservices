@@ -1,10 +1,7 @@
 package ProyectoFloristeria.Api.Floristeria.controllers;
 
-import ProyectoFloristeria.Api.Floristeria.Dto.ProductoDto;
-import ProyectoFloristeria.Api.Floristeria.Dto.TiendaDto;
-import ProyectoFloristeria.Api.Floristeria.enumeraciones.MaterialesDecoracion;
-import ProyectoFloristeria.Api.Floristeria.enumeraciones.PaisesSucursales;
-import ProyectoFloristeria.Api.Floristeria.enumeraciones.TipoProducto;
+import ProyectoFloristeria.Api.Floristeria.Dto.ProductDto;
+import ProyectoFloristeria.Api.Floristeria.enumeraciones.DecorationMaterials;
 import ProyectoFloristeria.Api.Floristeria.services.ProductoServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -18,7 +15,7 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping(value = "/api/v2/producto")
-public class ProductoController {
+public class ProductController {
 
     @Autowired
     private ProductoServiceImpl productoService;
@@ -29,12 +26,12 @@ public class ProductoController {
             @ApiResponse(responseCode = "500", description = "Error interno, por favor revisar consola")
     })
     @PostMapping(value = "addTree")
-    public ResponseEntity<Mono<ProductoDto>>createNewTree(
+    public ResponseEntity<Mono<ProductDto>>createNewTree(
             @RequestParam double altura,
             @RequestParam double precio,
             @RequestParam String idTienda
     ){
-        Mono<ProductoDto> newTree = productoService.createTree(altura,precio,idTienda);
+        Mono<ProductDto> newTree = productoService.createTree(altura,precio,idTienda);
         return ResponseEntity.status(HttpStatus.CREATED).body(newTree);
     }
 
@@ -44,12 +41,12 @@ public class ProductoController {
             @ApiResponse(responseCode = "500", description = "Error interno, por favor revisar consola")
     })
     @PostMapping(value = "addFlower")
-    public ResponseEntity<Mono<ProductoDto>>createNewFlower(
+    public ResponseEntity<Mono<ProductDto>>createNewFlower(
             @RequestParam String color,
             @RequestParam double precio,
             @RequestParam String idTienda
     ){
-        Mono<ProductoDto> newFlower = productoService.createFlower(color,precio,idTienda);
+        Mono<ProductDto> newFlower = productoService.createFlower(color,precio,idTienda);
         return ResponseEntity.status(HttpStatus.CREATED).body(newFlower);
     }
 
@@ -59,12 +56,12 @@ public class ProductoController {
             @ApiResponse(responseCode = "500", description = "Error interno, por favor revisar consola")
     })
     @PostMapping(value = "addDecor")
-    public ResponseEntity<Mono<ProductoDto>>createNewDecor(
-            @RequestParam MaterialesDecoracion material,
+    public ResponseEntity<Mono<ProductDto>>createNewDecor(
+            @RequestParam DecorationMaterials material,
             @RequestParam double precio,
             @RequestParam String idTienda
     ){
-        Mono<ProductoDto> newDecor = productoService.createDecor(material,precio,idTienda);
+        Mono<ProductDto> newDecor = productoService.createDecor(material,precio,idTienda);
         return ResponseEntity.status(HttpStatus.CREATED).body(newDecor);
     }
 
@@ -74,9 +71,8 @@ public class ProductoController {
             @ApiResponse(responseCode = "500", description = "Error interno, por favor revisar consola")
     })
     @GetMapping("/getAll")
-    public ResponseEntity<Flux<ProductoDto>> getAllProducts() {
-        Flux<ProductoDto> allProducts = productoService.getAllProducts();
-        return ResponseEntity.ok(allProducts);
+    public Flux<ProductDto> getAllProducts() {
+        return productoService.getAllProducts();
     }
 
     @Operation(summary = "Selecciona un producto")
@@ -85,7 +81,7 @@ public class ProductoController {
             @ApiResponse(responseCode = "500", description = "Error interno, por favor revisar consola")
     })
     @GetMapping("getOne")
-    public Mono<ResponseEntity<ProductoDto>> buscarUnProducto(
+    public Mono<ResponseEntity<ProductDto>> buscarUnProducto(
             @RequestParam String idProducto
     ) {
         return productoService.getProductById(idProducto)
@@ -98,7 +94,7 @@ public class ProductoController {
             @ApiResponse(responseCode = "500", description = "Error interno, por favor revisar consola")
     })
     @PutMapping("updateTree")
-    public Mono<ResponseEntity<ProductoDto>> modificarArbol(
+    public Mono<ResponseEntity<ProductDto>> modificarArbol(
             @RequestParam String idArbol,
             @RequestParam double altura,
             @RequestParam double precio
@@ -113,7 +109,7 @@ public class ProductoController {
             @ApiResponse(responseCode = "500", description = "Error interno, por favor revisar consola")
     })
     @PutMapping("updateFlower")
-    public Mono<ResponseEntity<ProductoDto>> modificarFlor(
+    public Mono<ResponseEntity<ProductDto>> modificarFlor(
             @RequestParam String idFlor,
             @RequestParam String color,
             @RequestParam double precio
@@ -128,9 +124,9 @@ public class ProductoController {
             @ApiResponse(responseCode = "500", description = "Error interno, por favor revisar consola")
     })
     @PutMapping("updateDecor")
-    public Mono<ResponseEntity<ProductoDto>> modificarDecoracion(
+    public Mono<ResponseEntity<ProductDto>> modificarDecoracion(
             @RequestParam String idDecor,
-            @RequestParam MaterialesDecoracion material,
+            @RequestParam DecorationMaterials material,
             @RequestParam double precio
     ) {
         return productoService.updateDecor(idDecor,material,precio)

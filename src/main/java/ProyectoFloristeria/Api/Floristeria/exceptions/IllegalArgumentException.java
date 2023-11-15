@@ -1,4 +1,4 @@
-package ProyectoFloristeria.Api.Floristeria.excepciones;
+package ProyectoFloristeria.Api.Floristeria.exceptions;
 
 public class IllegalArgumentException extends Exception{
     public IllegalArgumentException(String message){
