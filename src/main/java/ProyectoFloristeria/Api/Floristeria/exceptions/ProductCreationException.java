@@ -1,4 +1,4 @@
-package ProyectoFloristeria.Api.Floristeria.excepciones;
+package ProyectoFloristeria.Api.Floristeria.exceptions;
 
 public class ProductCreationException extends Exception{
     public ProductCreationException(String message){

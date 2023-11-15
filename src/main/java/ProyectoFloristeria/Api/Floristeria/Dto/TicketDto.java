@@ -21,6 +21,4 @@ public class TicketDto {
     private List<ProductDocument> misProductos;
     @Schema(description = "Valor Total de la compra", example = "20.99")
     private Double total;
-
-
 }
