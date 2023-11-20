@@ -10,11 +10,9 @@
 - GRADLE VERSION 8.2.1
 - KOTLIN VERSION 1.8.20
 - MongoDB VERSION 6.0.6
-- Docker VERSION 24.0.6
 
 ### Debes tener instalado:
 - MongoDB 
-- Docker
 - Intellij idea o tu IDE de preferencia
 
 
